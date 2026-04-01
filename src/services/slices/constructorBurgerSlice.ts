@@ -1,47 +1,38 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
 import type { TIngredient, TConstructorIngredient } from '../../utils/types';
 
-type TBun = Pick<
-  TIngredient,
-  '_id' | 'name' | 'price' | 'image' | 'image_large' | 'image_mobile'
->;
-
 type TConstractBurgerState = {
-  bun: TBun;
-  ingredients: TIngredient[];
+  bun: TConstructorIngredient | null;
+  ingredients: TConstructorIngredient[];
 };
 
 const initialState: TConstractBurgerState = {
-  bun: {
-    _id: '',
-    name: '',
-    price: 0,
-    image: '',
-    image_large: '',
-    image_mobile: ''
-  },
+  bun: null,
   ingredients: []
 };
 
+const SLICE_NAME = 'constructBurger';
+
 export const constructorBurgerSlice = createSlice({
-  name: 'constructBurger',
+  name: SLICE_NAME,
   initialState,
   reducers: {
-    addIngredient: (state, action: PayloadAction<TIngredient>) => {
-      if (action.payload.type === 'bun') {
-        state.bun = { ...state.bun, ...action.payload };
-      } else {
-        state.ingredients.push(action.payload);
-      }
+    addIngredient: {
+      reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+        if (action.payload.type === 'bun') {
+          state.bun = { ...state.bun, ...action.payload };
+        } else {
+          state.ingredients.push(action.payload);
+        }
+      },
+      prepare: (ingredient: TIngredient) => ({
+        payload: { ...ingredient, id: nanoid() }
+      })
     },
     removerIngredient: (state, action: PayloadAction<string>) => {
-      if (action.payload === state.bun._id) {
-        state.bun = { ...state.bun, ...initialState };
-      } else {
-        state.ingredients = state.ingredients.filter(
-          (ing) => ing._id !== action.payload
-        );
-      }
+      state.ingredients = state.ingredients.filter(
+        (ing) => ing.id !== action.payload
+      );
     }
   },
   selectors: {

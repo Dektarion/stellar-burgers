@@ -18,8 +18,10 @@ export const getIngredients = createAsyncThunk('ingredients/getAll', async () =>
   getIngredientsApi()
 );
 
+const SLICE_NAME = 'ingredients';
+
 export const ingredientsSlice = createSlice({
-  name: 'ingredients',
+  name: SLICE_NAME,
   initialState,
   reducers: {},
   selectors: {
@@ -52,5 +54,3 @@ export const {
   selectError,
   selectIngredientById
 } = ingredientsSlice.selectors;
-
-// export default ingredientsSlice.reducer;

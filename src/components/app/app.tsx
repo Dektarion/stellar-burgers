@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import {
   ConstructorPage,
   Feed,
@@ -12,6 +12,13 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
+import {
+  getIngredientsSelector,
+  selectLoading,
+  selectError,
+  getIngredients
+} from '../../services/slices/ingredientsSlice';
+import { getTitleNumber } from '../../services/slices/feedsSlice';
 
 import {
   AppHeader,
@@ -21,23 +28,41 @@ import {
   ProtectedRoute
 } from '@components';
 import { Preloader } from '@ui';
+import { useSelector, useDispatch } from '../../services/store';
+import { useEffect } from 'react';
 
 const App = () => {
-  /** TODO: взять переменные из стора */
-  const isIngredientsLoading = false;
-  const ingredients = [];
-  const error = null;
+  const dispatch = useDispatch();
+  const isIngredientsLoading = useSelector(selectLoading);
+  const ingredients = useSelector(getIngredientsSelector);
+  const error = useSelector(selectError);
+  const navigate = useNavigate();
+  const orderInfoTitle = useSelector(getTitleNumber);
+
+  useEffect(() => {
+    dispatch(getIngredients());
+  }, []);
+
+  const onClose = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <BrowserRouter>
+      {isIngredientsLoading ? (
+        <Preloader />
+      ) : error ? (
+        <div className={`${styles.error} text text_type_main-medium pt-4`}>
+          {error}
+        </div>
+      ) : ingredients.length > 0 ? (
         <Routes>
           <Route path='/' element={<ConstructorPage />} />
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={'Детали ингредиента'}>
+              <Modal title={'Детали ингредиента'} onClose={onClose}>
                 <IngredientDetails />
               </Modal>
             }
@@ -46,7 +71,7 @@ const App = () => {
             <Route
               path=':number'
               element={
-                <Modal title={''}>
+                <Modal title={`#${orderInfoTitle}`} onClose={onClose}>
                   <OrderInfo />
                 </Modal>
               }
@@ -105,7 +130,7 @@ const App = () => {
               path='orders:number'
               element={
                 <ProtectedRoute>
-                  <Modal title={''}>
+                  <Modal title={''} onClose={onClose}>
                     <OrderInfo />
                   </Modal>
                 </ProtectedRoute>
@@ -114,20 +139,11 @@ const App = () => {
           </Route>
           <Route path='*' element={<NotFound404 />} />
         </Routes>
-      </BrowserRouter>
-      {/* {isIngredientsLoading ? (
-        <Preloader />
-      ) : error ? (
-        <div className={`${styles.error} text text_type_main-medium pt-4`}>
-          {error}
-        </div>
-      ) : ingredients.length > 0 ? (
-        <ConstructorPage />
       ) : (
         <div className={`${styles.title} text text_type_main-medium pt-4`}>
           Нет игредиентов
         </div>
-      )} */}
+      )}
     </div>
   );
 };
