@@ -11,13 +11,10 @@ import {
 import { useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
-  const dispatch = useDispatch();
   const { number } = useParams<string>();
   const orderData = useSelector((state: RootState) =>
     selectOrderByNumber(state, +number!)
   );
-
-  dispatch(addTitleNumber(+number!));
 
   const ingredients: TIngredient[] = useSelector(getIngredientsSelector);
 

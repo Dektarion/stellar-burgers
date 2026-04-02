@@ -20,11 +20,18 @@ const initialState: TFeedsState = {
   titleNumber: 0
 };
 
-export const getFeeds = createAsyncThunk('feeds/getAll', async () =>
-  getFeedsApi()
+const THUNK_NAME = {
+  getAllFeeds: 'feeds/getAll'
+};
+
+export const getFeeds = createAsyncThunk(
+  `${THUNK_NAME.getAllFeeds}`,
+  async () => getFeedsApi()
 );
 
 const SLICE_NAME = 'feeds';
+
+// TODO: удалить ненужный редьюсер и селекторы
 
 export const feedsSlice = createSlice({
   name: SLICE_NAME,

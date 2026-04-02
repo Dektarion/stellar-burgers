@@ -8,7 +8,6 @@ import { RootState } from 'src/services/store';
 
 export const IngredientDetails: FC = () => {
   const { id } = useParams<string>();
-  console.log(id);
   const ingredientData = useSelector((state: RootState) =>
     selectIngredientById(state, id!)
   );

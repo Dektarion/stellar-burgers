@@ -18,12 +18,15 @@ import {
   selectError,
   getIngredients
 } from '../../services/slices/ingredientsSlice';
-import { getTitleNumber } from '../../services/slices/feedsSlice';
-
+import {
+  getUser,
+  isAuthCheckedSelector
+} from '../../services/slices/userSlice';
 import {
   AppHeader,
   IngredientDetails,
   Modal,
+  ModalOrderWrapper,
   OrderInfo,
   ProtectedRoute
 } from '@components';
@@ -37,10 +40,10 @@ const App = () => {
   const ingredients = useSelector(getIngredientsSelector);
   const error = useSelector(selectError);
   const navigate = useNavigate();
-  const orderInfoTitle = useSelector(getTitleNumber);
 
   useEffect(() => {
     dispatch(getIngredients());
+    dispatch(getUser());
   }, []);
 
   const onClose = () => {
@@ -68,14 +71,7 @@ const App = () => {
             }
           />
           <Route path='/feed' element={<Feed />}>
-            <Route
-              path=':number'
-              element={
-                <Modal title={`#${orderInfoTitle}`} onClose={onClose}>
-                  <OrderInfo />
-                </Modal>
-              }
-            />
+            <Route path=':number' element={<ModalOrderWrapper />} />
           </Route>
           <Route
             path='/login'
@@ -130,9 +126,10 @@ const App = () => {
               path='orders:number'
               element={
                 <ProtectedRoute>
-                  <Modal title={''} onClose={onClose}>
+                  {/* <Modal title={''} onClose={onClose}>
                     <OrderInfo />
-                  </Modal>
+                  </Modal> */}
+                  <ModalOrderWrapper />
                 </ProtectedRoute>
               }
             />
