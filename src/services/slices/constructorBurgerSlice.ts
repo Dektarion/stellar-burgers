@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction,
+  nanoid,
+  createSelector
+} from '@reduxjs/toolkit';
 import type { TIngredient, TConstructorIngredient } from '../../utils/types';
 
 type TConstractBurgerState = {
@@ -33,16 +38,28 @@ export const constructorBurgerSlice = createSlice({
       state.ingredients = state.ingredients.filter(
         (ing) => ing.id !== action.payload
       );
+    },
+    resetConstructor: (state) => {
+      state.bun = null;
+      state.ingredients = [];
     }
   },
   selectors: {
     getBun: (state) => state.bun,
-    getBurgerIngredients: (state) => state.ingredients
+    getBurgerIngredients: (state) => state.ingredients,
+    getIngredientsIDArr: createSelector(
+      (state: TConstractBurgerState) => state.bun,
+      (state: TConstractBurgerState) => state.ingredients,
+      (bun, ingredients) => {
+        if (!bun) return [];
+        return [bun._id, ...ingredients.map((ing) => ing._id), bun._id];
+      }
+    )
   }
 });
 
-export const { getBun, getBurgerIngredients } =
+export const { getBun, getBurgerIngredients, getIngredientsIDArr } =
   constructorBurgerSlice.selectors;
 
-export const { addIngredient, removerIngredient } =
+export const { addIngredient, removerIngredient, resetConstructor } =
   constructorBurgerSlice.actions;

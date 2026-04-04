@@ -10,7 +10,6 @@ import {
   Register,
   ResetPassword
 } from '@pages';
-import '../../index.css';
 import styles from './app.module.css';
 import {
   getIngredientsSelector,
@@ -44,7 +43,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getIngredients());
     dispatch(getUser());
-  }, []);
+  }, [dispatch]);
 
   const onClose = () => {
     navigate(-1);
@@ -92,7 +91,7 @@ const App = () => {
           <Route
             path='/forgot-password'
             element={
-              <ProtectedRoute>
+              <ProtectedRoute onlyUnAuth>
                 <ForgotPassword />
               </ProtectedRoute>
             }
@@ -100,7 +99,7 @@ const App = () => {
           <Route
             path='/reset-password'
             element={
-              <ProtectedRoute>
+              <ProtectedRoute onlyUnAuth>
                 <ResetPassword />
               </ProtectedRoute>
             }
