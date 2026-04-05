@@ -142,12 +142,12 @@ export const logoutUser = createAsyncThunk(
   async (_, { dispatch }) => {
     logoutApi()
       .then(() => {
-        localStorage.clear(); // очищаем refreshToken
-        deleteCookie('accessToken'); // очищаем accessToken
-        dispatch(userLogout()); // удаляем пользователя из хранилища
+        localStorage.clear();
+        deleteCookie('accessToken');
+        dispatch(userLogout());
       })
       .catch(() => {
-        console.log('Ошибка выполнения выхода');
+        console.error('Ошибка выполнения выхода');
       });
   }
 );

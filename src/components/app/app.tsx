@@ -120,18 +120,16 @@ const App = () => {
                   <ProfileOrders />
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path='orders:number'
-              element={
-                <ProtectedRoute>
-                  {/* <Modal title={''} onClose={onClose}>
-                    <OrderInfo />
-                  </Modal> */}
-                  <ModalOrderWrapper />
-                </ProtectedRoute>
-              }
-            />
+            >
+              <Route
+                path=':number'
+                element={
+                  <ProtectedRoute>
+                    <ModalOrderWrapper />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
           </Route>
           <Route path='*' element={<NotFound404 />} />
         </Routes>

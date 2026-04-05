@@ -2,12 +2,9 @@ import { FC, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { RootState, useSelector, useDispatch } from '../../services/store';
+import { RootState, useSelector } from '../../services/store';
 import { getIngredientsSelector } from '../../services/slices/ingredientsSlice';
-import {
-  addTitleNumber,
-  selectOrderByNumber
-} from '../../services/slices/feedsSlice';
+import { selectOrderByNumber } from '../../services/slices/feedsSlice';
 import { useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
@@ -18,7 +15,6 @@ export const OrderInfo: FC = () => {
 
   const ingredients: TIngredient[] = useSelector(getIngredientsSelector);
 
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 

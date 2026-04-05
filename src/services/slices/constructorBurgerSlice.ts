@@ -34,10 +34,24 @@ export const constructorBurgerSlice = createSlice({
         payload: { ...ingredient, id: nanoid() }
       })
     },
-    removerIngredient: (state, action: PayloadAction<string>) => {
+    removeIngredient: (state, action: PayloadAction<string>) => {
       state.ingredients = state.ingredients.filter(
         (ing) => ing.id !== action.payload
       );
+    },
+    moveDownIngredient: (state, action: PayloadAction<number>) => {
+      const newArray: TConstructorIngredient[] = [...state.ingredients];
+      const item = newArray.splice(action.payload, 1)[0];
+      newArray.splice(action.payload + 1, 0, item);
+
+      state.ingredients = newArray;
+    },
+    moveUpIngredient: (state, action: PayloadAction<number>) => {
+      const newArray: TConstructorIngredient[] = [...state.ingredients];
+      const item = newArray.splice(action.payload, 1)[0];
+      newArray.splice(action.payload - 1, 0, item);
+
+      state.ingredients = newArray;
     },
     resetConstructor: (state) => {
       state.bun = null;
@@ -61,5 +75,10 @@ export const constructorBurgerSlice = createSlice({
 export const { getBun, getBurgerIngredients, getIngredientsIDArr } =
   constructorBurgerSlice.selectors;
 
-export const { addIngredient, removerIngredient, resetConstructor } =
-  constructorBurgerSlice.actions;
+export const {
+  addIngredient,
+  removeIngredient,
+  resetConstructor,
+  moveDownIngredient,
+  moveUpIngredient
+} = constructorBurgerSlice.actions;
