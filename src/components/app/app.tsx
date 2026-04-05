@@ -17,16 +17,12 @@ import {
   selectError,
   getIngredients
 } from '../../services/slices/ingredientsSlice';
-import {
-  getUser,
-  isAuthCheckedSelector
-} from '../../services/slices/userSlice';
+import { getUser } from '../../services/slices/userSlice';
 import {
   AppHeader,
   IngredientDetails,
   Modal,
   ModalOrderWrapper,
-  OrderInfo,
   ProtectedRoute
 } from '@components';
 import { Preloader } from '@ui';
