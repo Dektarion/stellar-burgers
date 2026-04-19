@@ -8,7 +8,7 @@ type TOrderState = {
   error: string | null | undefined;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   orderModalData: null,
   isLoading: false,
   error: null
