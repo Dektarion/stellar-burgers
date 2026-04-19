@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "order": {
+    "_id": "69e4fbc3a641",
+    "status": "done",
+    "name": "Био-марсианский spicy краторный бургер",
+    "owner": {
+      "name": "Моковое Имя",
+      "email": "moked@mokedtest.com",
+      "createdAt": "2026-04-19T15:58:59.453Z",
+      "updatedAt": "2026-04-19T15:58:59.668Z"
+    },
+    "createdAt": "2026-04-19T15:58:59.453Z",
+    "updatedAt": "2026-04-19T15:58:59.668Z",
+    "number": 666,
+    "price": 3024
+  },
+  "name": "Био-марсианский spicy краторный бургер"
+}
