@@ -13,7 +13,7 @@ type TFeedsState = {
   titleNumber: number;
 };
 
-const initialState: TFeedsState = {
+export const initialState: TFeedsState = {
   publicOrders: [],
   userOrders: [],
   total: null,
