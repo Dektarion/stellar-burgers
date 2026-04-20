@@ -5,6 +5,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    allowCypressEnv: false
+    allowCypressEnv: false,
+    baseUrl: 'http://localhost:4000/',
+    supportFile: 'cypress/support/e2e.ts'
   }
 });

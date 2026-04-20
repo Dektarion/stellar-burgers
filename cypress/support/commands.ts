@@ -1,4 +1,11 @@
+// import './commands.d.ts';
 /// <reference types="cypress" />
+
+Cypress.Commands.add('addIngredient', (id: string) => {
+  cy.get(`[data-test-id="${id}"]`).find('button').click();
+  cy.get(`[data-test-id-in-cart="${id}"]`).should('exist').and('be.visible');
+});
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -25,13 +32,4 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
 // }

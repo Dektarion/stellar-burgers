@@ -7,7 +7,7 @@ describe('test page load & api/ingredients & modals', () => {
       fixture: 'ingredients.json'
     }).as('getIngredients');
 
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
     cy.wait('@getIngredients');
   });
 
@@ -21,13 +21,17 @@ describe('test page load & api/ingredients & modals', () => {
 
   it('should modal works with mocked data', () => {
     cy.contains('Краторная булка').should('be.visible').click();
+    cy.get(`#modals`).should('be.visible');
     cy.get(`[data-test-id="close"]`).should('be.visible').click();
+    cy.get(`#modals`).should('not.be.visible');
 
     cy.contains('Биокотлета из').should('be.visible').click();
+    cy.get(`#modals`).should('be.visible');
     cy.get(`[data-test-id="overlay"]`).should('exist').click({ force: true });
+    cy.get(`#modals`).should('not.be.visible');
 
     cy.contains('Соус Spicy-X').should('be.visible').click();
-    cy.get(`[id="modals"]`).should('contain.text', 'Соус Spicy-X');
+    cy.get(`#modals`).should('contain.text', 'Соус Spicy-X');
   });
 });
 
@@ -37,36 +41,43 @@ describe('test add/remove ingredients to/from cart', () => {
       fixture: 'ingredients.json'
     }).as('getIngredients');
 
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
     cy.wait('@getIngredients');
   });
 
   it('add & remove ingredients', () => {
     cy.get(`[data-test-id="${mockedData.data[0]._id}"]`).find('button').click();
+    cy.get(`[data-test-id="bun-top"]`).should('exist').and('be.visible');
+    cy.get(`[data-test-id="bun-bot"]`).should('exist').and('be.visible');
+
     cy.get(`[data-test-id="${mockedData.data[1]._id}"]`).find('button').click();
+    cy.get(`[data-test-id-in-cart="${mockedData.data[1]._id}"]`)
+      .should('exist')
+      .and('be.visible');
+
     cy.get(`[data-test-id="${mockedData.data[2]._id}"]`).find('button').click();
+    cy.get(`[data-test-id-in-cart="${mockedData.data[2]._id}"]`)
+      .should('exist')
+      .and('be.visible');
 
     cy.get(`[data-test-id-in-cart="${mockedData.data[1]._id}"]`)
       .find('.constructor-element__action')
       .click();
+    cy.get(`[data-test-id-in-cart="${mockedData.data[1]._id}"]`).should(
+      'not.exist'
+    );
+
     cy.get(`[data-test-id-in-cart="${mockedData.data[2]._id}"]`)
       .find('.constructor-element__action')
       .click();
+    cy.get(`[data-test-id-in-cart="${mockedData.data[2]._id}"]`).should(
+      'not.exist'
+    );
   });
 });
 
 describe('create order with auth user', () => {
   beforeEach(() => {
-    cy.fixture('tokens.json').then((tokens) => {
-      cy.setCookie('accessToken', tokens.accessToken);
-
-      cy.visit('http://localhost:4000', {
-        onBeforeLoad(win) {
-          win.localStorage.setItem('refreshToken', tokens.refreshToken);
-        }
-      });
-    });
-
     cy.intercept('GET', '**/ingredients', {
       fixture: 'ingredients.json'
     }).as('getIngredients');
@@ -79,7 +90,16 @@ describe('create order with auth user', () => {
       fixture: 'orderResponse.json'
     }).as('postOrder');
 
-    cy.visit('http://localhost:4000');
+    cy.fixture('tokens.json').then((tokens) => {
+      cy.setCookie('accessToken', tokens.accessToken);
+
+      cy.visit('/', {
+        onBeforeLoad(win) {
+          win.localStorage.setItem('refreshToken', tokens.refreshToken);
+        }
+      });
+    });
+
     cy.wait('@getIngredients');
     cy.wait('@getUser');
   });
@@ -90,21 +110,18 @@ describe('create order with auth user', () => {
   });
 
   it('create order', () => {
-    cy.get(`[data-test-id="${mockedData.data[0]._id}"]`).find('button').click();
-    cy.get(`[data-test-id="${mockedData.data[1]._id}"]`).find('button').click();
-    cy.get(`[data-test-id="${mockedData.data[2]._id}"]`).find('button').click();
+    cy.addIngredient(mockedData.data[0]._id);
+    cy.addIngredient(mockedData.data[1]._id);
+    cy.addIngredient(mockedData.data[2]._id);
 
     cy.contains('Оформить заказ').should('be.visible').click();
 
     cy.wait('@postOrder');
 
-    cy.get(`[id="modals"]`).should(
-      'contain.text',
-      `${mockedOrderData.order.number}`
-    );
+    cy.get(`#modals`).should('contain.text', `${mockedOrderData.order.number}`);
 
     cy.get(`[data-test-id="close"]`).should('be.visible').click();
-    cy.get(`[id="modals"]`).should('not.be.visible');
+    cy.get(`#modals`).should('not.be.visible');
 
     cy.get(`[data-test-id="no-ingredients"]`)
       .find('li')
